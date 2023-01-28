@@ -63,18 +63,18 @@ public class ExamServiceImpl {
             }
         });
         List<QuestionResponse> questionResponses=new ArrayList<>();
-        Integer currentAge=MoonAge.getPreviousMoonAge(submitExamInfo.getMoonAge());
+        Integer newCurrentAge=MoonAge.getPreviousMoonAge(submitExamInfo.getCurrentMoonAge());
         if (domains.size()!=0 && submitExamInfo.getMoonAge()>MoonAge.stage){
-            Integer minAge=MoonAge.getPreviousMoonAge(currentAge);
+            Integer minAge=MoonAge.getPreviousMoonAge(newCurrentAge);
             List<QuestionDetail> questions=questionDetailRepository.findByAgeAndDomain(
-                    minAge,currentAge,domains);
+                    minAge,newCurrentAge,domains);
             questionResponses=questions.stream().map(q->
                     JSONObject.parseObject(JSONObject.toJSONString(q),QuestionResponse.class)
             ).collect(Collectors.toList());
         }
         ExamVo examVo=new ExamVo();
         examVo.setQuestionResponses(questionResponses);
-        examVo.setCurrentMoonAge(currentAge);
+        examVo.setCurrentMoonAge(newCurrentAge);
         return examVo;
     }
 

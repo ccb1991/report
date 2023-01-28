@@ -8,5 +8,6 @@ import java.util.List;
 public class SubmitExamInfo {
     private Integer moonAge;
     private Integer currentMoonAge;
+    private Integer currentScore;
     private List<SubmitAnswers> answers;
 }
