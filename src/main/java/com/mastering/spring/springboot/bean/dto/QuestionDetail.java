@@ -35,7 +35,7 @@ public class QuestionDetail {
 
     }
 
-    public AnswerDetail getStandardAnswer() throws NoStandardAnswer {
+    public static AnswerDetail getStandardAnswer(List<AnswerDetail> answerList) throws NoStandardAnswer {
         for (AnswerDetail a:answerList){
             if (a.isStandardAnswer()){
                 return a;

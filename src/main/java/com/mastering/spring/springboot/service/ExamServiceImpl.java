@@ -3,6 +3,8 @@ package com.mastering.spring.springboot.service;
 import com.alibaba.fastjson.JSONObject;
 import com.mastering.spring.springboot.bean.dto.AnswerDetail;
 import com.mastering.spring.springboot.bean.dto.QuestionDetail;
+import com.mastering.spring.springboot.bean.dto.QuestionDomain;
+import com.mastering.spring.springboot.bean.dto.QuestionItem;
 import com.mastering.spring.springboot.bean.exception.EnumTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
 import com.mastering.spring.springboot.bean.exception.NoStandardAnswer;
@@ -11,8 +13,12 @@ import com.mastering.spring.springboot.bean.vo.exam.ExamVo;
 import com.mastering.spring.springboot.bean.vo.exam.QuestionResponse;
 import com.mastering.spring.springboot.bean.vo.exam.SubmitAnswers;
 import com.mastering.spring.springboot.bean.vo.exam.SubmitExamInfo;
+import com.mastering.spring.springboot.bean.vo.score.DomainScore;
+import com.mastering.spring.springboot.bean.vo.score.ItemScore;
 import com.mastering.spring.springboot.bean.vo.score.Score;
 import com.mastering.spring.springboot.repository.AnswerRepository;
+import com.mastering.spring.springboot.repository.DomainTypeRepository;
+import com.mastering.spring.springboot.repository.ItemTypeRepository;
 import com.mastering.spring.springboot.repository.QuestionDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +32,12 @@ public class ExamServiceImpl {
 
     @Autowired
     private AnswerRepository answerRepository;
+
+    @Autowired
+    private DomainTypeRepository domainTypeRepository;
+
+    @Autowired
+    private ItemTypeRepository itemTypeRepository;
 
     @Autowired
     private QuestionDetailRepository questionDetailRepository;
@@ -89,18 +101,28 @@ public class ExamServiceImpl {
         return examVo;
     }
 
-    public Score calculateScore(SubmitExamInfo submitExamInfo){
+    public Score calculateScore(SubmitExamInfo submitExamInfo)
+            throws NoStandardAnswer {
+        Score totalScore=calculateTotalScore(submitExamInfo.getMoonAge());
         return new Score();
     }
 
     public Score calculateTotalScore(Integer moonAge)
             throws NoStandardAnswer {
         List<QuestionDetail> questionDetails=questionDetailRepository.findByAgeLessThan(moonAge);
-        Score score=new Score();
+        List<QuestionDomain> questionDomains=domainTypeRepository.findAll();
+        List<QuestionItem> questionItems=itemTypeRepository.findAll();
+        Score score=new Score(questionDomains,questionItems);
         for (QuestionDetail q:questionDetails){
-            AnswerDetail answerDetail=q.getStandardAnswer();
+            AnswerDetail answerDetail=
+                    QuestionDetail.getStandardAnswer(q.getAnswerList());
             Integer answerScore=answerDetail.getScore();
-
+            ItemScore itemScore=new ItemScore(answerScore,
+                    ItemType.valueOf(q.getItem().getItem()));
+            score.updateItemScore(itemScore);
+            DomainScore domainScore=new DomainScore(answerScore,
+                    DomainType.valueOf(q.getDomain().getDomain()));
+            score.updateDomainScore(domainScore);
         }
         return score;
     }

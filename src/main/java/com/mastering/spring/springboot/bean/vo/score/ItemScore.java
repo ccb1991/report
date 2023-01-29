@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Data
 public class ItemScore {
-    private Integer score;
+    private Integer score=0;
     private ItemType itemType;
 
     public ItemScore(){}
