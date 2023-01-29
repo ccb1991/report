@@ -3,6 +3,7 @@ package com.mastering.spring.springboot.service;
 import com.alibaba.fastjson.JSONObject;
 import com.mastering.spring.springboot.bean.dto.AnswerDetail;
 import com.mastering.spring.springboot.bean.dto.QuestionDetail;
+import com.mastering.spring.springboot.bean.exception.DomainTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
 import com.mastering.spring.springboot.bean.vo.*;
 import com.mastering.spring.springboot.repository.AnswerRepository;
@@ -34,7 +35,7 @@ public class ExamServiceImpl {
         ).collect(Collectors.toList());
         ExamVo examVo=new ExamVo();
         examVo.setQuestionResponses(questionResponses);
-        examVo.setCurrentMoonAge(moonAge);
+//        examVo.setCurrentMoonAge(moonAge);
         return  examVo;
     }
 
@@ -43,12 +44,12 @@ public class ExamServiceImpl {
      * @param submitExamInfo
      * @return
      */
-    public ExamVo submitExam(SubmitExamInfo submitExamInfo) throws NoPreviousMoonAgeError {
+    public ExamVo submitExam(SubmitExamInfo submitExamInfo) throws NoPreviousMoonAgeError, DomainTypeError {
         List<SubmitAnswers> submitAnswers=submitExamInfo.getAnswers();
         List<Integer> ids= submitAnswers.stream().map(SubmitAnswers::getQuestionId).
                 collect(Collectors.toList());
         List<QuestionDetail> questionDetails=questionDetailRepository.findById(ids);
-        List<String> domains=new ArrayList<>();
+        List<DomainType> domains=new ArrayList<>();
         List<QuestionDetail> nextQuestion=new ArrayList<>();
         submitAnswers.forEach(submitAnswer->{
             Integer questionId= submitAnswer.getQuestionId();
@@ -57,24 +58,31 @@ public class ExamServiceImpl {
             AnswerDetail answerDetail=questionDetail.getAnswerList()
                     .stream().filter(AnswerDetail::isStandardAnswer).findFirst().get();
             if (!answerDetail.getId().equals(submitAnswer.getAnswerId())){
-                domains.add(questionDetail.getDomain().getDomain());
+                domains.add(DomainType.valueOf(questionDetail.getDomain().getDomain()));
 //                List<Question> questions=questionRepository.findByAgeAndDomain(
 //                        submitExamInfo.getAge(),questionDetail.getDomain().getDomain());
             }
         });
         List<QuestionResponse> questionResponses=new ArrayList<>();
-        Integer newCurrentAge=MoonAge.getPreviousMoonAge(submitExamInfo.getCurrentMoonAge());
+        List<DomainAge> domainAges=new ArrayList<>();
         if (domains.size()!=0 && submitExamInfo.getMoonAge()>MoonAge.stage){
-            Integer minAge=MoonAge.getPreviousMoonAge(newCurrentAge);
-            List<QuestionDetail> questions=questionDetailRepository.findByAgeAndDomain(
-                    minAge,newCurrentAge,domains);
-            questionResponses=questions.stream().map(q->
-                    JSONObject.parseObject(JSONObject.toJSONString(q),QuestionResponse.class)
-            ).collect(Collectors.toList());
+            for (DomainType domain: domains){
+                Integer domainCurrentMoonAge=submitExamInfo.getAgeByDomain(domain);
+                Integer newCurrentAge=MoonAge.getPreviousMoonAge(domainCurrentMoonAge);
+                if (newCurrentAge>0){
+                    Integer minAge=MoonAge.getPreviousMoonAge(newCurrentAge);
+                    List<QuestionDetail> questions=questionDetailRepository.findByAgeAndDomain(
+                            minAge,newCurrentAge,domain.toString());
+                    questionResponses.addAll(questions.stream().map(q->
+                            JSONObject.parseObject(JSONObject.toJSONString(q),QuestionResponse.class)
+                    ).collect(Collectors.toList()));
+                    domainAges.add(new DomainAge(newCurrentAge,domain));
+                }
+            }
         }
         ExamVo examVo=new ExamVo();
         examVo.setQuestionResponses(questionResponses);
-        examVo.setCurrentMoonAge(newCurrentAge);
+        examVo.setDomainAges(domainAges);
         return examVo;
     }
 

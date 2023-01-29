@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class ExamVo {
-    private Integer currentMoonAge;
+    private List<DomainAge> domainAges;
     private Integer currentScore;
     private List<QuestionResponse> questionResponses;
 }

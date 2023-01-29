@@ -2,6 +2,7 @@ package com.mastering.spring.springboot.controller;
 
 import java.util.List;
 
+import com.mastering.spring.springboot.bean.exception.DomainTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
 import com.mastering.spring.springboot.bean.vo.ExamVo;
 import com.mastering.spring.springboot.bean.vo.Score;
@@ -35,7 +36,7 @@ public class ExamController {
 	 */
 	@PostMapping("/submitExam")
 	public ExamVo submitExam(@RequestBody SubmitExamInfo submitExamInfo)
-			throws NoPreviousMoonAgeError {
+			throws NoPreviousMoonAgeError, DomainTypeError {
 		return examService.submitExam(submitExamInfo);
 	}
 
