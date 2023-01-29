@@ -8,6 +8,7 @@ import com.mastering.spring.springboot.bean.dto.QuestionItem;
 import com.mastering.spring.springboot.bean.exception.EnumTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
 import com.mastering.spring.springboot.bean.exception.NoStandardAnswer;
+import com.mastering.spring.springboot.bean.report.ExcelReport;
 import com.mastering.spring.springboot.bean.vo.*;
 import com.mastering.spring.springboot.bean.vo.exam.ExamVo;
 import com.mastering.spring.springboot.bean.vo.exam.QuestionResponse;
@@ -143,20 +144,8 @@ public class ExamServiceImpl {
             throws NoStandardAnswer, IOException {
         Score totalScore=calculateTotalScore(submitExamInfo.getMoonAge());
         Score currentScore=submitExamInfo.getCurrentScore();
-        FileSystemView fsv = FileSystemView.getFileSystemView();
-        String desktop = fsv.getHomeDirectory().getPath();
-        String filePath = desktop + "/report.xlsx";
-        FileInputStream fileInputStream = new FileInputStream(filePath);
-        XSSFWorkbook  workbook = new XSSFWorkbook(fileInputStream);
-        XSSFSheet sheet = workbook.getSheet("A、0-12沟通.图");
-        XSSFRow row = sheet.getRow(6);
-        String value=row.getCell(0).getStringCellValue();
-        XSSFCell cell=row.getCell(1);
-        cell.setCellValue(2);
-        FileOutputStream out = new FileOutputStream(filePath);
-        workbook.write(out);
-        out.close();
-        fileInputStream.close();
+        ExcelReport excelReport=new ExcelReport(totalScore,currentScore,
+                submitExamInfo);
     }
 
     /**

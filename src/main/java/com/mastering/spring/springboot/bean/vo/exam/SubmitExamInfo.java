@@ -1,6 +1,7 @@
 package com.mastering.spring.springboot.bean.vo.exam;
 
 import com.mastering.spring.springboot.bean.exception.EnumTypeError;
+import com.mastering.spring.springboot.bean.vo.ChildInfo;
 import com.mastering.spring.springboot.bean.vo.DomainAge;
 import com.mastering.spring.springboot.bean.vo.DomainType;
 import com.mastering.spring.springboot.bean.vo.score.Score;
@@ -10,7 +11,9 @@ import java.util.List;
 
 @Data
 public class SubmitExamInfo {
+    private ChildInfo childInfo;
     private Integer moonAge;
+    private String name;
     private List<DomainAge> domainAges;
     private Score currentScore;
     private List<SubmitAnswers> answers;
