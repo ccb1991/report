@@ -66,17 +66,34 @@ public class ExamServiceImpl {
                 collect(Collectors.toList());
         List<QuestionDetail> questionDetails=questionDetailRepository.findById(ids);
         List<DomainType> domains=new ArrayList<>();
+        // 计算当前分数
+        Score score=submitExamInfo.getCurrentScore();
+        if (score==null){
+            List<QuestionDomain> questionDomains=domainTypeRepository.findAll();
+            List<QuestionItem> questionItems=itemTypeRepository.findAll();
+            score=new Score(questionDomains,questionItems);
+        }
+        Score finalScore = score;
         submitAnswers.forEach(submitAnswer->{
+            AnswerDetail subAnswerDetail=answerRepository.findById(
+                    submitAnswer.getAnswerId());
             Integer questionId= submitAnswer.getQuestionId();
             QuestionDetail questionDetail=questionDetails.stream().filter(q->q.getId().equals(questionId)
             ).findFirst().get();
-            AnswerDetail answerDetail=questionDetail.getAnswerList()
+            DomainType domainType=DomainType.valueOf(questionDetail.getDomain().getDomain());
+            AnswerDetail standardAnswer=questionDetail.getAnswerList()
                     .stream().filter(AnswerDetail::isStandardAnswer).findFirst().get();
-            if (!answerDetail.getId().equals(submitAnswer.getAnswerId())){
-                domains.add(DomainType.valueOf(questionDetail.getDomain().getDomain()));
-//                List<Question> questions=questionRepository.findByAgeAndDomain(
-//                        submitExamInfo.getAge(),questionDetail.getDomain().getDomain());
+            if (!standardAnswer.getId().equals(submitAnswer.getAnswerId())){
+                domains.add(domainType);
+            } else {
+                subAnswerDetail=standardAnswer;
             }
+            DomainScore domainScore=new DomainScore(subAnswerDetail.getScore(),
+                    domainType);
+            finalScore.updateDomainScore(domainScore);
+            ItemScore itemScore=new ItemScore(subAnswerDetail.getScore(),
+                    ItemType.valueOf(questionDetail.getItem().getItem()));
+            finalScore.updateItemScore(itemScore);
         });
         List<QuestionResponse> questionResponses=new ArrayList<>();
         List<DomainAge> domainAges=new ArrayList<>();
@@ -98,12 +115,14 @@ public class ExamServiceImpl {
         ExamVo examVo=new ExamVo();
         examVo.setQuestionResponses(questionResponses);
         examVo.setDomainAges(domainAges);
+        examVo.setCurrentScore(score);
         return examVo;
     }
 
     public Score calculateScore(SubmitExamInfo submitExamInfo)
             throws NoStandardAnswer {
         Score totalScore=calculateTotalScore(submitExamInfo.getMoonAge());
+        Score currentScore=new Score();
         return new Score();
     }
 
