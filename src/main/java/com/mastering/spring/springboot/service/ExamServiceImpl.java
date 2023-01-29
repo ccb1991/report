@@ -3,16 +3,14 @@ package com.mastering.spring.springboot.service;
 import com.alibaba.fastjson.JSONObject;
 import com.mastering.spring.springboot.bean.dto.AnswerDetail;
 import com.mastering.spring.springboot.bean.dto.QuestionDetail;
-import com.mastering.spring.springboot.bean.exception.DomainTypeError;
+import com.mastering.spring.springboot.bean.exception.EnumTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
 import com.mastering.spring.springboot.bean.vo.*;
 import com.mastering.spring.springboot.repository.AnswerRepository;
 import com.mastering.spring.springboot.repository.QuestionDetailRepository;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.management.MonitorInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,13 +42,12 @@ public class ExamServiceImpl {
      * @param submitExamInfo
      * @return
      */
-    public ExamVo submitExam(SubmitExamInfo submitExamInfo) throws NoPreviousMoonAgeError, DomainTypeError {
+    public ExamVo submitExam(SubmitExamInfo submitExamInfo) throws NoPreviousMoonAgeError, EnumTypeError {
         List<SubmitAnswers> submitAnswers=submitExamInfo.getAnswers();
         List<Integer> ids= submitAnswers.stream().map(SubmitAnswers::getQuestionId).
                 collect(Collectors.toList());
         List<QuestionDetail> questionDetails=questionDetailRepository.findById(ids);
         List<DomainType> domains=new ArrayList<>();
-        List<QuestionDetail> nextQuestion=new ArrayList<>();
         submitAnswers.forEach(submitAnswer->{
             Integer questionId= submitAnswer.getQuestionId();
             QuestionDetail questionDetail=questionDetails.stream().filter(q->q.getId().equals(questionId)
@@ -72,7 +69,7 @@ public class ExamServiceImpl {
                 if (newCurrentAge>0){
                     Integer minAge=MoonAge.getPreviousMoonAge(newCurrentAge);
                     List<QuestionDetail> questions=questionDetailRepository.findByAgeAndDomain(
-                            minAge,newCurrentAge,domain.toString());
+                            minAge,newCurrentAge,domain.name());
                     questionResponses.addAll(questions.stream().map(q->
                             JSONObject.parseObject(JSONObject.toJSONString(q),QuestionResponse.class)
                     ).collect(Collectors.toList()));

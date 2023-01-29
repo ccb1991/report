@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class ExamVo {
     private List<DomainAge> domainAges;
-    private Integer currentScore;
+    private List<DomainScore> domainScores;
     private List<QuestionResponse> questionResponses;
 }
