@@ -1,5 +1,7 @@
-package com.mastering.spring.springboot.bean.vo;
+package com.mastering.spring.springboot.bean.vo.exam;
 
+import com.mastering.spring.springboot.bean.vo.DomainAge;
+import com.mastering.spring.springboot.bean.vo.score.DomainScore;
 import lombok.Data;
 
 import java.util.List;

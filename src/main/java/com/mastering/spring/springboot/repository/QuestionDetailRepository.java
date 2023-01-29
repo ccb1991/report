@@ -11,6 +11,8 @@ public interface QuestionDetailRepository extends CrudRepository<QuestionDetail,
     @Query(value = "select * from question q where q.id in (?1)",nativeQuery = true)
     List<QuestionDetail> findById(List<Integer> id);
 
+    List<QuestionDetail> findByAgeLessThan(Integer moonAge);
+
     @Query(value = "select * from question q where q.age between ?1 and ?2",nativeQuery = true)
     List<QuestionDetail> findByAge(Integer minMoonAge,Integer maxMoonAge);
 

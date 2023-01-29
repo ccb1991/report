@@ -1,6 +1,7 @@
 package com.mastering.spring.springboot.bean.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mastering.spring.springboot.bean.exception.NoStandardAnswer;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -34,8 +35,13 @@ public class QuestionDetail {
 
     }
 
-//    public void setDomain(String domain){
-//        this.domain=QuestionDomain.valueOf(domain);
-//    }
+    public AnswerDetail getStandardAnswer() throws NoStandardAnswer {
+        for (AnswerDetail a:answerList){
+            if (a.isStandardAnswer()){
+                return a;
+            }
+        }
+        throw new NoStandardAnswer("未配置标准答案");
+    }
 
 }

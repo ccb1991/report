@@ -1,6 +1,8 @@
-package com.mastering.spring.springboot.bean.vo;
+package com.mastering.spring.springboot.bean.vo.exam;
 
 import com.mastering.spring.springboot.bean.exception.EnumTypeError;
+import com.mastering.spring.springboot.bean.vo.DomainAge;
+import com.mastering.spring.springboot.bean.vo.DomainType;
 import lombok.Data;
 
 import java.util.List;

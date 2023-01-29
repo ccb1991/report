@@ -5,7 +5,13 @@ import com.mastering.spring.springboot.bean.dto.AnswerDetail;
 import com.mastering.spring.springboot.bean.dto.QuestionDetail;
 import com.mastering.spring.springboot.bean.exception.EnumTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
+import com.mastering.spring.springboot.bean.exception.NoStandardAnswer;
 import com.mastering.spring.springboot.bean.vo.*;
+import com.mastering.spring.springboot.bean.vo.exam.ExamVo;
+import com.mastering.spring.springboot.bean.vo.exam.QuestionResponse;
+import com.mastering.spring.springboot.bean.vo.exam.SubmitAnswers;
+import com.mastering.spring.springboot.bean.vo.exam.SubmitExamInfo;
+import com.mastering.spring.springboot.bean.vo.score.Score;
 import com.mastering.spring.springboot.repository.AnswerRepository;
 import com.mastering.spring.springboot.repository.QuestionDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,5 +91,17 @@ public class ExamServiceImpl {
 
     public Score calculateScore(SubmitExamInfo submitExamInfo){
         return new Score();
+    }
+
+    public Score calculateTotalScore(Integer moonAge)
+            throws NoStandardAnswer {
+        List<QuestionDetail> questionDetails=questionDetailRepository.findByAgeLessThan(moonAge);
+        Score score=new Score();
+        for (QuestionDetail q:questionDetails){
+            AnswerDetail answerDetail=q.getStandardAnswer();
+            Integer answerScore=answerDetail.getScore();
+
+        }
+        return score;
     }
 }

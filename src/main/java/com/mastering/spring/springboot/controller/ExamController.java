@@ -2,9 +2,9 @@ package com.mastering.spring.springboot.controller;
 
 import com.mastering.spring.springboot.bean.exception.EnumTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
-import com.mastering.spring.springboot.bean.vo.ExamVo;
-import com.mastering.spring.springboot.bean.vo.Score;
-import com.mastering.spring.springboot.bean.vo.SubmitExamInfo;
+import com.mastering.spring.springboot.bean.vo.exam.ExamVo;
+import com.mastering.spring.springboot.bean.vo.score.Score;
+import com.mastering.spring.springboot.bean.vo.exam.SubmitExamInfo;
 import com.mastering.spring.springboot.service.ExamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

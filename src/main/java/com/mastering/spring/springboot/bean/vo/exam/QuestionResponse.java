@@ -1,4 +1,4 @@
-package com.mastering.spring.springboot.bean.vo;
+package com.mastering.spring.springboot.bean.vo.exam;
 
 import lombok.Data;
 
