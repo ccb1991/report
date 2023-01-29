@@ -20,9 +20,22 @@ import com.mastering.spring.springboot.repository.AnswerRepository;
 import com.mastering.spring.springboot.repository.DomainTypeRepository;
 import com.mastering.spring.springboot.repository.ItemTypeRepository;
 import com.mastering.spring.springboot.repository.QuestionDetailRepository;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.filechooser.FileSystemView;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,6 +108,7 @@ public class ExamServiceImpl {
                     ItemType.valueOf(questionDetail.getItem().getItem()));
             finalScore.updateItemScore(itemScore);
         });
+        // 查询前一阶段题目
         List<QuestionResponse> questionResponses=new ArrayList<>();
         List<DomainAge> domainAges=new ArrayList<>();
         if (domains.size()!=0 && submitExamInfo.getMoonAge()>MoonAge.stage){
@@ -119,13 +133,38 @@ public class ExamServiceImpl {
         return examVo;
     }
 
-    public Score calculateScore(SubmitExamInfo submitExamInfo)
-            throws NoStandardAnswer {
+    /**
+     * 生成报告
+     * @param submitExamInfo
+     * @return
+     * @throws NoStandardAnswer
+     */
+    public void produceReport(SubmitExamInfo submitExamInfo)
+            throws NoStandardAnswer, IOException {
         Score totalScore=calculateTotalScore(submitExamInfo.getMoonAge());
-        Score currentScore=new Score();
-        return new Score();
+        Score currentScore=submitExamInfo.getCurrentScore();
+        FileSystemView fsv = FileSystemView.getFileSystemView();
+        String desktop = fsv.getHomeDirectory().getPath();
+        String filePath = desktop + "/report.xlsx";
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        XSSFWorkbook  workbook = new XSSFWorkbook(fileInputStream);
+        XSSFSheet sheet = workbook.getSheet("A、0-12沟通.图");
+        XSSFRow row = sheet.getRow(6);
+        String value=row.getCell(0).getStringCellValue();
+        XSSFCell cell=row.getCell(1);
+        cell.setCellValue(2);
+        FileOutputStream out = new FileOutputStream(filePath);
+        workbook.write(out);
+        out.close();
+        fileInputStream.close();
     }
 
+    /**
+     * 根据年龄段计算各领域与大项总分
+     * @param moonAge
+     * @return
+     * @throws NoStandardAnswer
+     */
     public Score calculateTotalScore(Integer moonAge)
             throws NoStandardAnswer {
         List<QuestionDetail> questionDetails=questionDetailRepository.findByAgeLessThan(moonAge);

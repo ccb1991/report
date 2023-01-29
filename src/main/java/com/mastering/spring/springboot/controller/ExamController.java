@@ -9,6 +9,10 @@ import com.mastering.spring.springboot.bean.vo.exam.SubmitExamInfo;
 import com.mastering.spring.springboot.service.ExamServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 
 @RestController
 @RequestMapping("/exam")
@@ -44,9 +48,27 @@ public class ExamController {
 	 * @param submitExamInfo
 	 * @return
 	 */
-	@PostMapping("/calculateScore")
-	public Score calculateScore(@RequestBody SubmitExamInfo submitExamInfo)
-			throws NoStandardAnswer {
-		return examService.calculateScore(submitExamInfo);
+	@PostMapping("/produceReport")
+	@ResponseBody
+	public HttpServletResponse calculateScore(
+			@RequestBody SubmitExamInfo submitExamInfo,
+								HttpServletResponse response)
+			throws NoStandardAnswer, IOException {
+//		OutputStream outputStream = null;
+//		try{
+			examService.produceReport(submitExamInfo);
+//			File file=examService.produceReport(submitExamInfo);
+//			response.addHeader("Content-Disposition","attachment:filename=report.xlsx");
+//			response.addHeader("Content-Length",""+file.getTotalSpace());
+//			outputStream = new FileOutputStream(file);
+//			response.setContentType("application/octet-stream");
+//		}
+//		finally {
+//			if (outputStream!=null){
+//				outputStream.flush();
+//				outputStream.close();
+//			}
+//		}
+		return response;
 	}
 }
