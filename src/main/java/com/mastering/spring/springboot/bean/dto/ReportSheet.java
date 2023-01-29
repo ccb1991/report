@@ -4,14 +4,13 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Entity(name = "itemPosition")
-@Table(name="item_position")
+@Entity(name = "reportSheet")
+@Table(name="report_sheet")
 @Data
-public class ItemPosition {
+public class ReportSheet {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String item;
-    private Integer col;
-    private Integer row;
+    private String  sheetName;
+    private String  rootDomainName;
 }

@@ -18,19 +18,19 @@ import java.util.List;
 
 @Data
 public class ExcelReport {
-    private static String path=System.getProperty("java.io.tmpdir");
-    private static String TempLateFile=String.format("%s%s",
-            System.getProperty("user.dir"),"/source/report.xlsx");
+    private static String path = System.getProperty("java.io.tmpdir");
+    private static String TempLateFile = String.format("%s%s",
+            System.getProperty("user.dir"), "/source/report.xlsx");
     private String fileName;
     private List<DomainSheet> sheetList;
     private DomainAnalyseSheet domainAnalyseSheet;
     private ContrastSheet contrastSheet;
-    private String examTime=getReportTime();
+    private String examTime = getReportTime();
     private ChildInfo childInfo;
 
     public ExcelReport(Score totalScore, Score currentScore,
-                       SubmitExamInfo submitExamInfo){
-        this.childInfo=submitExamInfo.getChildInfo();
+                       SubmitExamInfo submitExamInfo) {
+        this.childInfo = submitExamInfo.getChildInfo();
     }
 
     public void writeSheet() throws IOException {
@@ -38,23 +38,23 @@ public class ExcelReport {
         XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
         XSSFSheet sheet = workbook.getSheet("A、0-12沟通.图");
         XSSFRow row = sheet.getRow(6);
-        String value=row.getCell(0).getStringCellValue();
-        XSSFCell cell=row.getCell(1);
+        String value = row.getCell(0).getStringCellValue();
+        XSSFCell cell = row.getCell(1);
         cell.setCellValue(2);
         FileOutputStream out = new FileOutputStream(String.format(
-                "%s\\%s\\%s",path,childInfo.getChildName(),this.examTime));
+                "%s\\%s\\%s", path, childInfo.getChildName(), this.examTime));
         workbook.write(out);
         out.close();
         fileInputStream.close();
     }
 
-    public String getReportTime(){
+    public String getReportTime() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         return df.format(new Date());// new Date()为获取当前系统时间
     }
 
-    public static void main(String[] args){
-        String curDir =System.getProperty("java.io.tmpdir") ;
+    public static void main(String[] args) {
+        String curDir = System.getProperty("java.io.tmpdir");
         System.out.println("你当前的工作目录为 :" + curDir);
     }
 }
