@@ -44,9 +44,9 @@ public class ExcelReport {
     public ExcelReport(Score totalScore, Score currentScore,
                        SubmitExamInfo submitExamInfo, List<ReportSheet> reportSheets) {
         this.childInfo = submitExamInfo.getChildInfo();
-        this.fileName = String.format("%s_%s", childInfo.getChildName(), this.examTime);
-        this.reportSheets = Arrays.asList(reportSheets.get(0));
-//        this.reportSheets = reportSheets;
+        this.fileName = String.format("%s_%s.xlsx", childInfo.getChildName(), this.examTime);
+//        this.reportSheets = Arrays.asList(reportSheets.get(0));
+        this.reportSheets = reportSheets;
         this.totalScore = totalScore;
         this.currentScore = currentScore;
     }
@@ -66,9 +66,9 @@ public class ExcelReport {
                 for (DomainPosition domainPosition:domainPositionList){
                     Cell cell=sheet.getRow(domainPosition.getRow()).
                             getCell(domainPosition.getCol());
-                    if (domainPosition.getPositionType().equals("0")){
+                    if (domainPosition.getPositionType().equals(0)){
                         cell.setCellValue(totalDomainScore.getScore());
-                    } else if (domainPosition.getPositionType().equals("1")){
+                    } else if (domainPosition.getPositionType().equals(1)){
                         cell.setCellValue(currentDomainScore.getScore());
                     } else{
                         throw new PositionTypeError("位置类型错误");
@@ -84,9 +84,9 @@ public class ExcelReport {
                     for (ItemPosition itemPosition:itemPositionList){
                         Cell cell=sheet.getRow(itemPosition.getRow()).
                                 getCell(itemPosition.getCol());
-                        if (itemPosition.getPositionType().equals("0")){
+                        if (itemPosition.getPositionType().equals(0)){
                             cell.setCellValue(totalItemScore.getScore());
-                        }else if (itemPosition.getPositionType().equals("1")){
+                        }else if (itemPosition.getPositionType().equals(1)){
                             cell.setCellValue(currentItemScore.getScore());
                         } else{
                             throw new PositionTypeError("位置类型错误");
