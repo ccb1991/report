@@ -1,10 +1,7 @@
 package com.mastering.spring.springboot.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mastering.spring.springboot.bean.dto.AnswerDetail;
-import com.mastering.spring.springboot.bean.dto.QuestionDetail;
-import com.mastering.spring.springboot.bean.dto.QuestionDomain;
-import com.mastering.spring.springboot.bean.dto.QuestionItem;
+import com.mastering.spring.springboot.bean.dto.*;
 import com.mastering.spring.springboot.bean.exception.EnumTypeError;
 import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
 import com.mastering.spring.springboot.bean.exception.NoStandardAnswer;
@@ -17,10 +14,7 @@ import com.mastering.spring.springboot.bean.vo.exam.SubmitExamInfo;
 import com.mastering.spring.springboot.bean.vo.score.DomainScore;
 import com.mastering.spring.springboot.bean.vo.score.ItemScore;
 import com.mastering.spring.springboot.bean.vo.score.Score;
-import com.mastering.spring.springboot.repository.AnswerRepository;
-import com.mastering.spring.springboot.repository.DomainTypeRepository;
-import com.mastering.spring.springboot.repository.ItemTypeRepository;
-import com.mastering.spring.springboot.repository.QuestionDetailRepository;
+import com.mastering.spring.springboot.repository.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -55,6 +49,9 @@ public class ExamServiceImpl {
 
     @Autowired
     private QuestionDetailRepository questionDetailRepository;
+
+    @Autowired
+    private ReportSheetRepository reportSheetRepository;
 
 
     public ExamVo queryQuestionByAge(Integer moonAge) throws NoPreviousMoonAgeError {
@@ -146,6 +143,8 @@ public class ExamServiceImpl {
         Score currentScore=submitExamInfo.getCurrentScore();
         ExcelReport excelReport=new ExcelReport(totalScore,currentScore,
                 submitExamInfo);
+        List<ReportSheet> reportSheets=reportSheetRepository.findAll();
+        return;
     }
 
     /**

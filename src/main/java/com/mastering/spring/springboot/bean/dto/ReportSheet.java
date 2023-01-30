@@ -1,8 +1,10 @@
 package com.mastering.spring.springboot.bean.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "reportSheet")
 @Table(name="report_sheet")
@@ -13,4 +15,9 @@ public class ReportSheet {
     private Integer id;
     private String  sheetName;
     private String  rootDomainName;
+    private String  createTime;
+    @OneToMany(mappedBy = "reportSheet")
+    @JsonIgnoreProperties(value = { "reportSheet" })
+    private List<QuestionDomain> questionDomains;
+
 }

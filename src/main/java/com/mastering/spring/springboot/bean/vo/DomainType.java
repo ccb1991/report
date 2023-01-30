@@ -4,7 +4,8 @@ import com.mastering.spring.springboot.bean.exception.EnumTypeError;
 
 public enum DomainType {
     listening("听者语言"),
-    NotLanguage("非语言沟通");
+    NotLanguage("非语言沟通"),
+    AnswerQuestion("说者-回答问题");
 
     private String name;
 

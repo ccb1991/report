@@ -1,5 +1,6 @@
 package com.mastering.spring.springboot.bean.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -11,7 +12,11 @@ public class DomainPosition {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String domain;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "domainId")
+    @JsonIgnoreProperties(value = {"domainPositionList"})
+    private QuestionDomain domain;
+    private Integer positionType;
     private Integer col;
     private Integer row;
 }

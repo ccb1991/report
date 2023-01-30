@@ -16,7 +16,8 @@ public enum ItemType {
     Response("接续他人句子"),
     Recall("回溯"),
     ActiveExpression("主动表达需求"),
-    AskQuestion("wh的主动提问");
+    AskQuestion("wh的主动提问"),
+    AskCan("主动提问能/不能或是会不会的问题");
 
     private String name;
 

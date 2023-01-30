@@ -23,6 +23,7 @@ public class Score {
                     DomainType.valueOf(q.getDomain())));
         });
         questionItems.forEach(i -> {
+            System.out.println(i.getItem());
             itemScores.add(new ItemScore(
                     ItemType.valueOf(i.getItem())));
         });
