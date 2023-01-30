@@ -2,6 +2,8 @@ package com.mastering.spring.springboot.bean.vo.score;
 
 import com.mastering.spring.springboot.bean.dto.QuestionDomain;
 import com.mastering.spring.springboot.bean.dto.QuestionItem;
+import com.mastering.spring.springboot.bean.exception.DomainTypeNotFound;
+import com.mastering.spring.springboot.bean.exception.ItemTypeNotFound;
 import com.mastering.spring.springboot.bean.vo.DomainType;
 import com.mastering.spring.springboot.bean.vo.ItemType;
 import lombok.Data;
@@ -39,5 +41,27 @@ public class Score {
         int index=this.itemScores.indexOf(itemScore);
         ItemScore i=this.itemScores.get(index);
         i.setScore(itemScore.getScore()+i.getScore());
+    }
+
+    public DomainScore getDomainScoreByDomain(DomainType domainType)
+            throws DomainTypeNotFound {
+        for(DomainScore domainScore : this.domainScores){
+            if (domainScore.getDomainType().equals(domainType)){
+                return domainScore;
+            }
+        }
+        throw new DomainTypeNotFound(
+                String.format("未找到领域%s关联分数",domainType.name()));
+    }
+
+    public ItemScore getItemSocreByItemType(ItemType itemType)
+            throws DomainTypeNotFound, ItemTypeNotFound {
+        for(ItemScore itemScore : this.itemScores){
+            if (itemScore.getItemType().equals(itemType)){
+                return itemScore;
+            }
+        }
+        throw new ItemTypeNotFound(
+                String.format("未找到大项%s关联分数",itemType.name()));
     }
 }

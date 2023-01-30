@@ -1,8 +1,6 @@
 package com.mastering.spring.springboot.controller;
 
-import com.mastering.spring.springboot.bean.exception.EnumTypeError;
-import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
-import com.mastering.spring.springboot.bean.exception.NoStandardAnswer;
+import com.mastering.spring.springboot.bean.exception.*;
 import com.mastering.spring.springboot.bean.vo.exam.ExamVo;
 import com.mastering.spring.springboot.bean.vo.score.Score;
 import com.mastering.spring.springboot.bean.vo.exam.SubmitExamInfo;
@@ -53,7 +51,7 @@ public class ExamController {
 	public HttpServletResponse calculateScore(
 			@RequestBody SubmitExamInfo submitExamInfo,
 								HttpServletResponse response)
-			throws NoStandardAnswer, IOException {
+			throws NoStandardAnswer, IOException, DomainTypeNotFound, PositionTypeError, ItemTypeNotFound {
 //		OutputStream outputStream = null;
 //		try{
 			examService.produceReport(submitExamInfo);

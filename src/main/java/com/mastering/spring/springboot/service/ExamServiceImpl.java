@@ -2,9 +2,7 @@ package com.mastering.spring.springboot.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.mastering.spring.springboot.bean.dto.*;
-import com.mastering.spring.springboot.bean.exception.EnumTypeError;
-import com.mastering.spring.springboot.bean.exception.NoPreviousMoonAgeError;
-import com.mastering.spring.springboot.bean.exception.NoStandardAnswer;
+import com.mastering.spring.springboot.bean.exception.*;
 import com.mastering.spring.springboot.bean.report.ExcelReport;
 import com.mastering.spring.springboot.bean.vo.*;
 import com.mastering.spring.springboot.bean.vo.exam.ExamVo;
@@ -138,12 +136,13 @@ public class ExamServiceImpl {
      * @throws NoStandardAnswer
      */
     public void produceReport(SubmitExamInfo submitExamInfo)
-            throws NoStandardAnswer, IOException {
+            throws NoStandardAnswer, IOException, DomainTypeNotFound, PositionTypeError, ItemTypeNotFound {
         Score totalScore=calculateTotalScore(submitExamInfo.getMoonAge());
         Score currentScore=submitExamInfo.getCurrentScore();
-        ExcelReport excelReport=new ExcelReport(totalScore,currentScore,
-                submitExamInfo);
         List<ReportSheet> reportSheets=reportSheetRepository.findAll();
+        ExcelReport excelReport=new ExcelReport(totalScore,currentScore,
+                submitExamInfo,reportSheets);
+        excelReport.writeSheet();
         return;
     }
 
