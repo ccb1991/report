@@ -34,6 +34,7 @@ public class ExcelReport {
             System.getProperty("user.dir"), "/source/report.xlsx");
     private String fileName;
     private List<ReportSheet> reportSheets;
+    private FirstSheet fistSheet;
     private DomainAnalyseSheet domainAnalyseSheet;
     private ContrastSheet contrastSheet;
     private String examTime = getReportTime();
@@ -54,6 +55,16 @@ public class ExcelReport {
     public void writeSheet() throws IOException, DomainTypeNotFound, PositionTypeError, ItemTypeNotFound {
         FileInputStream fileInputStream = new FileInputStream(ExcelReport.TempLateFile);
         XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+        writeDomainSheet(workbook);
+        FileOutputStream out = new FileOutputStream(String.format(
+                "%s\\%s", path, fileName));
+        workbook.write(out);
+        out.close();
+        fileInputStream.close();
+    }
+
+    private void writeDomainSheet(XSSFWorkbook workbook) throws DomainTypeNotFound,
+            PositionTypeError, ItemTypeNotFound {
         for (ReportSheet reportSheet:this.reportSheets){
             XSSFSheet sheet = workbook.getSheet(reportSheet.getSheetName());
             List<QuestionDomain> questionDomains = reportSheet.getQuestionDomains();
@@ -95,16 +106,6 @@ public class ExcelReport {
                 }
             }
         }
-//        XSSFSheet sheet = workbook.getSheet("A、0-12沟通.图");
-//        XSSFRow row = sheet.getRow(6);
-//        String value = row.getCell(0).getStringCellValue();
-//        XSSFCell cell = row.getCell(1);
-//        cell.setCellValue(2);
-        FileOutputStream out = new FileOutputStream(String.format(
-                "%s\\%s", path, fileName));
-        workbook.write(out);
-        out.close();
-        fileInputStream.close();
     }
 
     public String getReportTime() {
