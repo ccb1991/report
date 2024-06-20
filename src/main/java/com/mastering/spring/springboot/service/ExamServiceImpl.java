@@ -13,6 +13,7 @@ import com.mastering.spring.springboot.bean.vo.score.DomainScore;
 import com.mastering.spring.springboot.bean.vo.score.ItemScore;
 import com.mastering.spring.springboot.bean.vo.score.Score;
 import com.mastering.spring.springboot.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -31,8 +32,10 @@ import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class ExamServiceImpl {
 
@@ -53,6 +56,7 @@ public class ExamServiceImpl {
 
 
     public ExamVo queryQuestionByAge(Integer moonAge) throws NoPreviousMoonAgeError {
+        log.info("开始根据年龄查询题目");
         Integer previousMoonAge=MoonAge.getPreviousMoonAge(moonAge);
         List<QuestionDetail> questions=questionDetailRepository.findByAge(previousMoonAge,moonAge);
         List<QuestionResponse> questionResponses=questions.stream().map(q->
@@ -61,6 +65,7 @@ public class ExamServiceImpl {
         ExamVo examVo=new ExamVo();
         examVo.setQuestionResponses(questionResponses);
 //        examVo.setCurrentMoonAge(moonAge);
+        log.info("查询结束");
         return  examVo;
     }
 
