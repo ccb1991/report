@@ -72,7 +72,7 @@ public class ExamServiceImpl {
         log.info("查询结束");
         return  examVo;
     }
-    @Async("test")
+    @Async("MyExecutor2")
     public Future<ExamVo> queryQuestionByAge2(Integer moonAge) throws NoPreviousMoonAgeError {
         log.info("开始根据年龄查询题目");
         Integer previousMoonAge=MoonAge.getPreviousMoonAge(moonAge);

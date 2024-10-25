@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 @Data
-public class ThreadConfig {
+public class ThreadConfig2 {
     /**
      * 核心线程
      */
@@ -36,13 +36,13 @@ public class ThreadConfig {
     /**
      * 名称前缀
      */
-    @Value("${spring.task.execution.pool.thread-name-prefix}")
-    private String preFix;
+//    @Value("${spring.task.execution.pool.thread-name-prefix}")
+    private String preFix="test2-";
 
 //    @Value("${spring.task.execution.pool.rejected-execution-handler}")
     private RejectedExecutionHandler reject=new ThreadPoolExecutor.CallerRunsPolicy();
 
-    @Bean("MyExecutor")
+    @Bean("MyExecutor2")
     public Executor myExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(corePoolSize);

@@ -13,6 +13,7 @@ spring:
         keep-alive: 10000
         queue-capacity: 1000
         thread-name-prefix: test-
+#        rejected-execution-handler: CallerRunsPolicy
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
