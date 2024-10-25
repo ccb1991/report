@@ -25,6 +25,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +35,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -64,9 +67,41 @@ public class ExamServiceImpl {
         ).collect(Collectors.toList());
         ExamVo examVo=new ExamVo();
         examVo.setQuestionResponses(questionResponses);
+        JSONObject.parseObject("tsetset",ExamVo.class);
 //        examVo.setCurrentMoonAge(moonAge);
         log.info("查询结束");
         return  examVo;
+    }
+    @Async("test")
+    public Future<ExamVo> queryQuestionByAge2(Integer moonAge) throws NoPreviousMoonAgeError {
+        log.info("开始根据年龄查询题目");
+        Integer previousMoonAge=MoonAge.getPreviousMoonAge(moonAge);
+        List<QuestionDetail> questions=questionDetailRepository.findByAge(previousMoonAge,moonAge);
+        List<QuestionResponse> questionResponses=questions.stream().map(q->
+                JSONObject.parseObject(JSONObject.toJSONString(q),QuestionResponse.class)
+        ).collect(Collectors.toList());
+        ExamVo examVo=new ExamVo();
+        examVo.setQuestionResponses(questionResponses);
+        System.out.println("B类方法一的被执行,线程名:" + Thread.currentThread().getName());
+//        examVo.setCurrentMoonAge(moonAge);
+        log.info("查询结束");
+        return  new AsyncResult<>(examVo);
+    }
+
+    @Async("MyExecutor")
+    public Future<ExamVo> queryQuestionByAge3(Integer moonAge) throws NoPreviousMoonAgeError {
+        log.info("开始根据年龄查询题目");
+        Integer previousMoonAge=MoonAge.getPreviousMoonAge(moonAge);
+        List<QuestionDetail> questions=questionDetailRepository.findByAge(previousMoonAge,moonAge);
+        List<QuestionResponse> questionResponses=questions.stream().map(q->
+                JSONObject.parseObject(JSONObject.toJSONString(q),QuestionResponse.class)
+        ).collect(Collectors.toList());
+        ExamVo examVo=new ExamVo();
+        examVo.setQuestionResponses(questionResponses);
+        System.out.println("A类方法一的被执行,线程名:" + Thread.currentThread().getName());
+//        examVo.setCurrentMoonAge(moonAge);
+        log.info("查询结束");
+        return  new AsyncResult<>(examVo);
     }
 
     /**
@@ -174,6 +209,7 @@ public class ExamServiceImpl {
                     DomainType.valueOf(q.getDomain().getDomain()));
             score.updateDomainScore(domainScore);
         }
+
         return score;
     }
 }

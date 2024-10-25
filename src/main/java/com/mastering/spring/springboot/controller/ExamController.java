@@ -11,7 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/exam")
@@ -29,6 +30,20 @@ public class ExamController {
 	public ExamVo queryQuestion(@RequestParam("age") Integer moonAge)
 			throws NoPreviousMoonAgeError {
 		return examService.queryQuestionByAge(moonAge);
+	}
+
+	@GetMapping("/queryQuestion2")
+	public ExamVo queryQuestion2(@RequestParam("age") Integer moonAge)
+			throws NoPreviousMoonAgeError, ExecutionException, InterruptedException {
+		Future<ExamVo> future=examService.queryQuestionByAge2(moonAge);
+		return future.get();
+	}
+
+	@GetMapping("/queryQuestion3")
+	public ExamVo queryQuestion3(@RequestParam("age") Integer moonAge)
+			throws NoPreviousMoonAgeError, ExecutionException, InterruptedException {
+		Future<ExamVo> future=examService.queryQuestionByAge3(moonAge);
+		return future.get();
 	}
 
 	/**
