@@ -5,10 +5,11 @@ import com.mastering.spring.springboot.bean.vo.exam.ExamVo;
 import com.mastering.spring.springboot.bean.vo.score.Score;
 import com.mastering.spring.springboot.bean.vo.exam.SubmitExamInfo;
 import com.mastering.spring.springboot.service.ExamServiceImpl;
+import org.apache.poi.ss.usermodel.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.concurrent.ExecutionException;
@@ -17,6 +18,8 @@ import java.util.concurrent.Future;
 @RestController
 @RequestMapping("/exam")
 public class ExamController {
+	@Autowired
+	private  HttpServletRequest request;
 
 	@Autowired
 	private ExamServiceImpl examService;
@@ -40,9 +43,12 @@ public class ExamController {
 	}
 
 	@GetMapping("/queryQuestion3")
-	public ExamVo queryQuestion3(@RequestParam("age") Integer moonAge)
+	public ExamVo queryQuestion3(@RequestParam("age") Integer moonAge
+	,@RequestHeader("token") String header)
 			throws NoPreviousMoonAgeError, ExecutionException, InterruptedException {
 		Future<ExamVo> future=examService.queryQuestionByAge3(moonAge);
+		System.out.println(header);
+		String value=request.getHeader("token");
 		return future.get();
 	}
 

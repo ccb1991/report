@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.net.Inet4Address;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Test {
@@ -1113,5 +1114,164 @@ class RemoveOuterParentheses {
         s.add(3);
         s.retainAll(words);
         System.out.println(s);
+    }
+}
+
+class UniqueOccurrences {
+    public boolean uniqueOccurrences(int[] arr) {
+        ConcurrentHashMap<Integer,Integer> integerHashMap=new ConcurrentHashMap<>();
+        Arrays.stream(arr).forEach(a->{
+            Integer value=integerHashMap.getOrDefault(a,0)+1;
+            integerHashMap.put(a,value);
+        });
+        HashSet<Integer> set=new HashSet<>();
+        integerHashMap.values().forEach(v->set.add(v));
+        return set.size()==integerHashMap.values().size();
+    }
+
+    public static void main(String[] args) {
+        UniqueOccurrences uniqueOccurrences=new UniqueOccurrences();
+        uniqueOccurrences.uniqueOccurrences(new int[]{1,2,1});
+    }
+}
+
+class MaxNumberOfBalloons {
+    public int maxNumberOfBalloons(String text) {
+        HashMap<String,Integer> hashMap=new HashMap<>();
+        hashMap.put("a",0);
+        hashMap.put("b",0);
+        hashMap.put("o",0);
+        hashMap.put("l",0);
+        hashMap.put("n",0);
+        for (char c:text.toCharArray()){
+            if (c=='b' || c=='a' || c=='o' || c=='n' || c=='l'){
+                String cs=String.valueOf(c);
+                Integer v=hashMap.get(cs)+1;
+                hashMap.put(cs,v);
+            }
+        }
+        hashMap.put("l",hashMap.get("l")/2);
+        hashMap.put("o",hashMap.get("o")/2);
+        return hashMap.values().stream().sorted().
+                limit(1).collect(Collectors.toList()).get(0);
+    }
+}
+
+class MinDeletionSize {
+    public int minDeletionSize(String[] strs) {
+        int result=0;
+        for(int i=0;i<strs[0].length();i++){
+            char c=strs[0].charAt(i);
+            for (String s:strs){
+                if (s.charAt(i)<c){
+                    result++;
+                    break;
+                } else {
+                    c=s.charAt(i);
+                }
+            }
+        }
+        return result;
+
+    }
+}
+
+class RepeatedNTimes {
+    public int repeatedNTimes(int[] nums) {
+        HashSet<Integer> hashSet=new HashSet<>();
+        for(int i:nums){
+            if (hashSet.contains(i)){
+                return i;
+            } else {
+                hashSet.add(i);
+            }
+        }
+        return 0;
+    }
+}
+
+class CountCharacters {
+    public int countCharacters(String[] words, String chars) {
+        Integer result=0;
+        HashMap<String,Integer> hashMap=new HashMap<>();
+        for (char c:chars.toCharArray()){
+            String cs=String.valueOf(c);
+            Integer value=hashMap.getOrDefault(cs,0)+1;
+            hashMap.put(cs,value);
+        }
+        for (String w:words){
+            HashMap<String,Integer> wHashMap=new HashMap();
+            for (char wc:w.toCharArray()){
+                String wcs=String.valueOf(wc);
+                Integer value=wHashMap.getOrDefault(wcs,0)+1;
+                wHashMap.put(wcs,value);
+            }
+            Boolean flag=true;
+            for(Map.Entry<String,Integer> entry:wHashMap.entrySet()){
+                if (entry.getValue()>hashMap.getOrDefault(
+                        entry.getKey(),0)){
+                    flag=false;
+                    break;
+                }
+            }
+            if (flag){
+                result+=w.length();
+            }
+        }
+        return result;
+    }
+}
+
+
+class DistributeCandies {
+    public int[] distributeCandies(int candies, int num_people) {
+        int[] result=new int[num_people];
+        int position=0,count=1;
+        while(candies>0){
+            if (count>=candies){
+                count=candies;
+            }
+            result[position]+=count;
+            candies-=count;
+            position++;
+            count++;
+            if (position>num_people-1){
+                position=0;
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        DistributeCandies distributeCandies=new DistributeCandies();
+        distributeCandies.distributeCandies(7,4);
+    }
+}
+
+
+class MinimumAbsDifference {
+    public List<List<Integer>> minimumAbsDifference(int[] arr) {
+        int start=0,next=1;
+        List<List<Integer>> result=new ArrayList<>();
+        Arrays.sort(arr);
+        int min=999999999;
+        while(start<arr.length-1){
+            int value=Math.abs(arr[start]-arr[next]);
+            if (value<min){
+                min=value;
+                result=new ArrayList<>();
+                result.add(Arrays.asList(arr[start],arr[next]));
+            } else if (value==min){
+                result.add(Arrays.asList(arr[start],arr[next]));
+            }
+            start++;
+            next++;
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        MinimumAbsDifference minimumAbsDifference=new MinimumAbsDifference();
+        minimumAbsDifference.minimumAbsDifference(new int[]{4,2,1,3});
     }
 }
